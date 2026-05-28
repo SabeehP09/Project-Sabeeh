@@ -93,7 +93,7 @@ Project-Sabeeh/
 ### Step 1: Clone and Configure
 
 ```bash
-git clone <your-github-repo-url>
+git clone https://github.com/SabeehP09/Project-Sabeeh.git
 cd Project-Sabeeh
 ```
 
@@ -125,7 +125,7 @@ cd scripts
 ssh -i your-key.pem ec2-user@<EC2_PUBLIC_IP>
 # or ubuntu@<EC2_PUBLIC_IP> for Ubuntu
 
-git clone <your-github-repo-url>
+git clone https://github.com/SabeehP09/Project-Sabeeh.git
 cd Project-Sabeeh/scripts
 ./setup-ec2.sh
 ```

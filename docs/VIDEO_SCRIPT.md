@@ -22,7 +22,7 @@ Follow this script exactly to produce a concise, professional 5-minute demonstra
 > "First, let's look at the source code repository hosted on GitHub. The repository contains three main components: the Node.js application, the Dockerfile for containerization, and the Kubernetes YAML manifests for deployment."
 
 **Visuals (Screen Recording):**
-1. Open GitHub repository in browser.
+1. Open GitHub repository in browser: https://github.com/SabeehP09/Project-Sabeeh
 2. Highlight `src/app.js` — scroll to show timestamp, container ID, and visitor counter logic.
 3. Highlight `Dockerfile` — mention multi-stage build and security best practices.
 4. Highlight `k8s/deployment.yaml` and `k8s/service.yaml` — explain replicas, resource limits, and NodePort.
