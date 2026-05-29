@@ -73,8 +73,8 @@ Follow this script exactly to produce a concise, professional 5-minute demonstra
    kubectl get pods
    kubectl get services
    ```
-3. Show output with pods in `Running` state and service showing `NodePort` on `30080`.
-4. Open browser → navigate to `http://<EC2_PUBLIC_IP>:30080`.
+3. Show output with pods in `Running` state and service showing the app service.
+4. Open browser → navigate to `http://<EC2_PUBLIC_IP>:3000`.
 5. Show the running application page with timestamp, container ID, and visitor counter.
 
 ---
@@ -86,7 +86,7 @@ Follow this script exactly to produce a concise, professional 5-minute demonstra
 **Visuals (Screen Recording):**
 1. Refresh the browser page 2-3 times.
 2. Show the visitor counter incrementing.
-3. Open a new tab: `http://<EC2_PUBLIC_IP>:30080/health`
+3. Open a new tab: `http://<EC2_PUBLIC_IP>:3000/health`
 4. Show JSON response:
    ```json
    {

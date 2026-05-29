@@ -48,7 +48,7 @@ Using the AWS CLI, an ECR repository named  was created. The  script automates D
 
 ### Phase 4: Launch EC2 Instance (Free Tier)
 
-An EC2 **t2.micro** instance was launched using the Amazon Linux 2023 AMI. Configuration: 1 vCPU, 1 GB RAM, 20 GB gp2 storage, and a security group allowing inbound traffic on ports 22 (SSH), 80 (HTTP), and 30080 (NodePort). The instance public IPv4 address was recorded for browser access.
+An EC2 **t2.micro** instance was launched using the Amazon Linux 2023 AMI. Configuration: 1 vCPU, 1 GB RAM, 20 GB gp2 storage, and a security group allowing inbound traffic on ports 22 (SSH), 80 (HTTP), and 3000 (application). The instance public IPv4 address was recorded for browser access.
 
 ### Phase 5: Install Docker & Minikube on EC2
 
@@ -63,18 +63,18 @@ From the EC2 instance, the AWS CLI was configured with an IAM user possessing  p
 Two YAML manifests were applied:
 
 - **deployment.yaml:** Defines a Deployment with 1 replica, resource requests/limits (64Mi–256Mi memory, 100m–250m CPU), liveness probe on , and the ECR image URI.
-- **service.yaml:** Defines a NodePort Service mapping port 80 to container port 3000 on NodePort **30080**.
+- **service.yaml:** Defines a Service mapping port 80 to container port 3000.
 
-The  script replaces placeholder values in the manifest with the actual ECR URI before running .
+The  script replaces placeholder values in the manifest with the actual ECR URI before running . When using the direct Node.js app deployment path, the application is accessed on port 3000 instead of the Kubernetes NodePort.
 
 ### Phase 8: Testing & Verification
 
 Verification commands executed successfully:
 
--  — showed status 
--  — showed  on port 30080
-- Browser access to  — displayed the live application
--  — successfully scaled the app
+- `kubectl get pods` — showed status
+- `kubectl get services` — showed the Kubernetes service exposing the app on port 80
+- Browser access to `http://<EC2_IP>:3000` — displayed the live application for direct Node.js access
+- `kubectl scale deployment nodejs-app-deployment --replicas=2` — successfully scaled the app
 
 ### Phase 9: Clean Up Resources
 
@@ -96,11 +96,11 @@ Initially, the pod entered  state because the ECR image URI in  contained placeh
 
 **Resolution:** Updated the deployment manifest with the exact ECR image URI using  substitution in the deployment script. Ran  on EC2 before applying manifests. The pod then pulled the image successfully.
 
-### Challenge 3: Security Group Blocking NodePort Traffic
+### Challenge 3: Security Group Blocking External Traffic
 
-Although the application was running inside Minikube and the Service was active, the browser could not connect to . The connection simply timed out.
+Although the application was running on EC2, the browser could not connect to the public IP because the security group only allowed ports 22 and 80. The direct Node.js application listens on port 3000.
 
-**Resolution:** Identified that the EC2 Security Group only allowed ports 22 and 80. Added an inbound rule for **Custom TCP port 30080** from source . After saving the rule, the application became publicly accessible immediately.
+**Resolution:** Added an inbound rule for **Custom TCP port 3000** from source . After saving the rule, the application became publicly accessible immediately.
 
 ### Challenge 4: Minikube Docker Driver on t2.micro Memory Constraints
 
@@ -132,7 +132,7 @@ Every component used in this project falls within the AWS Free Tier, resulting i
 ## 6. Screenshots
 
 ![Running Application](screenshots/01-running-app.png)
-*Figure 2: Node.js web application running in the browser, displaying live timestamp, container ID, and visitor counter via EC2 public IP on NodePort 30080.*
+*Figure 2: Node.js web application running in the browser, displaying live timestamp, container ID, and visitor counter via EC2 public IP on port 3000.*
 
 ![ECR Repository](screenshots/02-ecr-repository.png)
 *Figure 3: Amazon Elastic Container Registry (ECR) showing the  repository with the  image tag pushed from the local Docker environment.*
@@ -147,7 +147,7 @@ Every component used in this project falls within the AWS Free Tier, resulting i
 *Figure 6: Kubernetes pods in  state, deployed via the ECR image on the Minikube cluster, showing successful container orchestration.*
 
 ![K8s Services](screenshots/06-k8s-services.png)
-*Figure 7: Kubernetes Service exposing the Node.js application via NodePort 30080, enabling public access through the EC2 instance security group.*
+*Figure 7: Kubernetes Service exposing the Node.js application internally; the public browser access runs on port 3000.*
 
 ---
 

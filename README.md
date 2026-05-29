@@ -34,8 +34,8 @@ This project demonstrates the end-to-end deployment of a containerized Node.js w
                                                           │
                                                           ▼
                                                    ┌──────────────┐
-                                                   │  NodePort    │
-                                                   │  :30080      │
+                                                   │  App Host    │
+                                                   │  :3000       │
                                                    └──────────────┘
                                                           │
                                                           ▼
@@ -101,6 +101,51 @@ Update the placeholders in the scripts:
 - Replace `YOUR_AWS_ACCOUNT_ID` with your actual AWS Account ID.
 - Replace `YOUR_REGION` with your AWS region (e.g., `us-east-1`).
 
+### Run Locally via IP Address
+
+You can run this app locally and access it from another device on the same network using the host machine's IP address.
+
+#### Option A: Run with Node.js
+
+```bash
+cd src
+npm install
+npm start
+```
+
+Then open in your browser:
+
+```text
+http://<HOST_IP>:3000
+```
+
+#### Option B: Run with Docker
+
+```bash
+docker build -t nodejs-aws-k8s-app .
+docker run -d --name nodejs-aws-k8s-app -p 3000:3000 nodejs-aws-k8s-app
+```
+
+Then open:
+
+```text
+http://<HOST_IP>:3000
+```
+
+> Make sure your machine firewall allows inbound traffic on port `3000`.
+
+#### Option C: Run with Docker Compose
+
+```bash
+docker compose up --build
+```
+
+Then open:
+
+```text
+http://<HOST_IP>:3000
+```
+
 ### Step 2: Build & Push to ECR
 
 ```bash
@@ -115,7 +160,7 @@ cd scripts
 3. **AMI:** Amazon Linux 2023 or Ubuntu Server 22.04 LTS
 4. **Instance Type:** `t2.micro` (Free Tier eligible)
 5. **Key Pair:** Create or select an existing key pair
-6. **Security Group:** Allow SSH (22), HTTP (80), and Custom TCP (30080) from anywhere
+6. **Security Group:** Allow SSH (22), HTTP (80), and Custom TCP (3000) from anywhere
 7. **Storage:** 20 GB gp2 (Free Tier eligible)
 8. Launch and note the **Public IPv4 address**
 
@@ -144,8 +189,9 @@ cd Project-Sabeeh/scripts
 Open your browser and navigate to:
 
 ```
-http://<EC2_PUBLIC_IP>:30080
+http://<EC2_PUBLIC_IP>:3000
 ```
+
 
 You should see the running Node.js application with:
 - ⏰ Live timestamp
@@ -204,7 +250,7 @@ aws ecr get-login-password ... | docker login ...
 ### Phase 7: Kubernetes Deployment
 
 - **Deployment:** Runs the container with resource limits (64Mi-256Mi memory, 100m-250m CPU), liveness and readiness probes.
-- **Service:** Exposes the app via `NodePort` on port `30080`.
+- **Service:** Exposes the app on port `3000`.
 
 ### Phase 8: Testing & Verification
 
@@ -242,7 +288,7 @@ minikube delete
 
 | # | Deliverable | Status | Location |
 |---|-------------|--------|----------|
-| 1 | Public Application URL | ⬜ | `http://<EC2_IP>:30080` |
+| 1 | Public Application URL | ⬜ | `http://<EC2_IP>:3000` |
 | 2 | Source Code Repository | ✅ | This GitHub repo |
 | 3 | Project Report (8 pages) | ✅ | `docs/REPORT.pdf` |
 | 4 | Demonstration Video (5 min) | ⬜ | YouTube Unlisted / Google Drive |
@@ -267,7 +313,7 @@ To avoid any charges beyond Free Tier:
 | `permission denied` for Docker | Run `sudo usermod -aG docker $USER` and re-login |
 | Minikube won't start | Ensure Docker is running: `sudo systemctl start docker` |
 | ImagePullBackOff | Verify ECR login and image URI in deployment.yaml |
-| Cannot access app on port 30080 | Open port 30080 in EC2 Security Group |
+| Cannot access app on port 3000 | Open port 3000 in EC2 Security Group |
 | Counter resets | Expected behavior on pod restart; uses file persistence within pod |
 
 ---

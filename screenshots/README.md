@@ -6,12 +6,12 @@ Place all required screenshots here before embedding them into the project repor
 
 | File Name | Description |
 |-----------|-------------|
-| `01-running-app.png` | Browser showing app at `http://<EC2_IP>:30080` |
+| `01-running-app.png` | Browser showing app at `http://<EC2_IP>:3000` |
 | `02-ecr-repository.png` | AWS ECR console showing `nodejs-aws-k8s-app` image |
 | `03-ec2-instance.png` | AWS EC2 console showing running `t2.micro` instance |
 | `04-minikube-status.png` | Terminal showing `minikube status` and `kubectl get nodes` |
 | `05-deployed-pods.png` | Terminal showing `kubectl get pods` in Running state |
-| `06-k8s-services.png` | Terminal showing `kubectl get services` with NodePort 30080 |
+| `06-k8s-services.png` | Terminal showing `kubectl get services` with ClusterIP service on port 80 |
 
 ## Formatting Tips
 

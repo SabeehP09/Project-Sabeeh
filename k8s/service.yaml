@@ -5,11 +5,10 @@ metadata:
   labels:
     app: nodejs-app
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: nodejs-app
   ports:
     - protocol: TCP
       port: 80
       targetPort: 3000
-      nodePort: 30080

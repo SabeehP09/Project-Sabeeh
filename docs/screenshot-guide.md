@@ -9,14 +9,14 @@ This document lists the **minimum 6 required screenshots** with exact captions t
 ### 1. Running Application (Browser)
 **File name:** `01-running-app.png`
 **How to capture:**
-- Open browser to `http://<EC2_PUBLIC_IP>:30080`
+- Open browser to `http://<EC2_PUBLIC_IP>:3000`
 - Ensure the page shows:
   - Timestamp
   - Container ID
   - Visitor Counter (> 0)
 
 **Caption:**
-> *Figure 1: Node.js web application running in the browser, displaying live timestamp, container ID, and visitor counter via EC2 public IP on NodePort 30080.*
+> *Figure 1: Node.js web application running in the browser, displaying live timestamp, container ID, and visitor counter via EC2 public IP on port 3000.*
 
 ---
 
@@ -69,14 +69,14 @@ This document lists the **minimum 6 required screenshots** with exact captions t
 
 ---
 
-### 6. Kubernetes Services (NodePort)
+### 6. Kubernetes Services
 **File name:** `06-k8s-services.png`
 **How to capture:**
 - On EC2 terminal, run: `kubectl get services`
-- Show `nodejs-app-service` with type `NodePort` and port `30080:30080/TCP`
+- Show `nodejs-app-service` with type `ClusterIP` and port `80/TCP`
 
 **Caption:**
-> *Figure 6: Kubernetes Service exposing the Node.js application via NodePort 30080, enabling public access through the EC2 instance's security group.*
+> *Figure 6: Kubernetes Service exposing the Node.js application internally on port 80, with the frontend available through the EC2 host on port 3000.*
 
 ---
 
@@ -85,7 +85,7 @@ This document lists the **minimum 6 required screenshots** with exact captions t
 | # | Screenshot | Command / Location |
 |---|------------|-------------------|
 | 7 | Docker image build log | Terminal: `docker build -t nodejs-aws-k8s-app .` |
-| 8 | Health endpoint JSON | Browser: `http://<EC2_IP>:30080/health` |
+| 8 | Health endpoint JSON | Browser: `http://<EC2_IP>:3000/health` |
 | 9 | Scaling demonstration | Terminal: `kubectl scale --replicas=2 deployment/nodejs-app-deployment` |
 | 10 | AWS Cost Explorer ($0) | AWS Console → Billing → Cost Explorer → MTD |
 

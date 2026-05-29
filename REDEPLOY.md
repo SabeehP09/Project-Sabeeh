@@ -65,7 +65,7 @@ You will see the pushed image URI at the end. Copy it — you'll need it for ver
 7. **Security Group:** Allow these inbound rules:
    - SSH (22) — from `0.0.0.0/0`
    - HTTP (80) — from `0.0.0.0/0`
-   - Custom TCP (30080) — from `0.0.0.0/0`
+   - Custom TCP (3000) — from `0.0.0.0/0`
 8. **Storage:** 20 GB gp2
 9. Click **Launch**
 10. Copy the **Public IPv4 address** — this is your new app URL
@@ -124,7 +124,7 @@ This script will:
 Open your browser and go to:
 
 ```
-http://<NEW_EC2_PUBLIC_IP>:30080
+http://<NEW_EC2_PUBLIC_IP>:3000
 ```
 
 You should see:
@@ -134,7 +134,7 @@ You should see:
 
 **Health check:**
 ```
-http://<NEW_EC2_PUBLIC_IP>:30080/health
+http://<NEW_EC2_PUBLIC_IP>:3000/health
 ```
 
 ---
@@ -182,7 +182,7 @@ minikube delete
 |-------|----------|
 | `permission denied` for Docker | Run `sudo usermod -aG docker $USER` and re-login |
 | `ImagePullBackOff` | Run `./deploy-k8s.sh` again — ECR login may have expired |
-| Cannot access port 30080 | Open port 30080 in EC2 Security Group |
+| Cannot access port 3000 | Open port 3000 in EC2 Security Group |
 | Minikube won't start | Ensure Docker is running: `sudo systemctl start docker` |
 
 ---
