@@ -17,6 +17,9 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
+# Ensure /app is writable by nodejs (needed for counter.json)
+RUN chown nodejs:nodejs /app
+
 # Copy dependencies from builder
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 

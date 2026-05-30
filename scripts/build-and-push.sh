@@ -4,6 +4,10 @@
 
 set -euo pipefail
 
+# Resolve project root regardless of where the script is run from
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 REGION=${1:-us-east-1}
 ACCOUNT_ID=${2:-YOUR_AWS_ACCOUNT_ID}
 REPO_NAME=${3:-nodejs-aws-k8s-app}
@@ -42,7 +46,7 @@ aws ecr create-repository --repository-name $REPO_NAME --region $REGION > /dev/n
 
 # Build Docker image
 echo "Building Docker image..."
-docker build -t $REPO_NAME:$IMAGE_TAG ../
+docker build -t $REPO_NAME:$IMAGE_TAG "$PROJECT_ROOT"
 
 # Tag image for ECR
 echo "Tagging image for ECR..."

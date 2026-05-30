@@ -182,7 +182,7 @@ minikube delete
 |-------|----------|
 | `permission denied` for Docker | Run `sudo usermod -aG docker $USER` and re-login |
 | `ImagePullBackOff` | Run `./deploy-k8s.sh` again — ECR login may have expired |
-| Cannot access port 3000 | Open port 3000 in EC2 Security Group |
+| Cannot access the app | Open port 3000 in EC2 Security Group |
 | Minikube won't start | Ensure Docker is running: `sudo systemctl start docker` |
 
 ---

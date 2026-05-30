@@ -4,6 +4,10 @@
 
 set -euo pipefail
 
+# Resolve project root regardless of where the script is run from
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 REGION=${1:-us-east-1}
 ACCOUNT_ID=${2:-YOUR_AWS_ACCOUNT_ID}
 REPO_NAME=${3:-nodejs-aws-k8s-app}
@@ -28,7 +32,7 @@ if [[ ! "$ACCOUNT_ID" =~ ^[0-9]{12}$ ]]; then
 fi
 
 ECR_IMAGE="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$REPO_NAME:$IMAGE_TAG"
-sed -i "s|^\(\s*image:\s*\).*|\1$ECR_IMAGE|" ../k8s/deployment.yaml
+sed -i "s|^\(\s*image:\s*\).*|\1$ECR_IMAGE|" "$PROJECT_ROOT/k8s/deployment.yaml"
 
 if [[ "$REGION" =~ ^[a-z]{2}-[a-z]+-[0-9][a-z]$ ]]; then
   echo "WARNING: '$REGION' looks like an availability zone, not a region."
@@ -54,8 +58,8 @@ kubectl create secret docker-registry ecr-secret \
 echo "=========================================="
 echo "Deploying to Kubernetes..."
 echo "=========================================="
-kubectl apply -f ../k8s/deployment.yaml
-kubectl apply -f ../k8s/service.yaml
+kubectl apply -f "$PROJECT_ROOT/k8s/deployment.yaml"
+kubectl apply -f "$PROJECT_ROOT/k8s/service.yaml"
 
 echo "=========================================="
 echo "Waiting for deployment to be ready..."

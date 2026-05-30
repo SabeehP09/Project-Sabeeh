@@ -55,10 +55,21 @@ unzip -o awscliv2.zip
 sudo ./aws/install --update
 rm -rf awscliv2.zip aws/
 
-echo "=========================================="
-echo "Starting Minikube cluster..."
-echo "=========================================="
-minikube start --driver=docker --nodes=1
+# Check available memory before starting Minikube
+AVAILABLE_MB=$(free -m | awk '/^Mem:/{print $7}')
+if [[ "$AVAILABLE_MB" -lt 1500 ]]; then
+    echo "=========================================="
+    echo "WARNING: Low memory detected (${AVAILABLE_MB}MB available)"
+    echo "Minikube requires at least ~1.5GB free RAM to run reliably."
+    echo "On t2/t3.micro instances, consider Docker-only deployment instead."
+    echo "Skipping Minikube start to prevent system overload."
+    echo "=========================================="
+else
+    echo "=========================================="
+    echo "Starting Minikube cluster..."
+    echo "=========================================="
+    minikube start --driver=docker --nodes=1
+fi
 
 echo "=========================================="
 echo "Verifying installations..."
