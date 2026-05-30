@@ -54,13 +54,13 @@ You will see the pushed image URI at the end. Copy it — you'll need it for ver
 
 ---
 
-## Step 4: Launch EC2 Instance (t2.micro)
+## Step 4: Launch EC2 Instance
 
 1. Go to [AWS Console → EC2](https://console.aws.amazon.com/ec2)
 2. Click **Launch Instance**
 3. **Name:** `minikube-k8s-node`
 4. **AMI:** Amazon Linux 2023 (or Ubuntu Server 22.04 LTS)
-5. **Instance Type:** `t2.micro` (Free Tier)
+5. **Instance Type:** `t2.micro` (Free Tier) for Docker-only; `t3.small` or larger if using Kubernetes/Minikube
 6. **Key Pair:** Create or select an existing `.pem` key pair
 7. **Security Group:** Allow these inbound rules:
    - SSH (22) — from `0.0.0.0/0`
@@ -99,7 +99,22 @@ aws configure
 
 ---
 
-## Step 7: Deploy to Kubernetes
+## Step 7: Deploy the Application
+
+### Option A: Docker-only (Recommended for Free Tier t2.micro)
+
+On the EC2 instance:
+```bash
+aws ecr get-login-password --region <YOUR_REGION> | \
+  docker login --username AWS --password-stdin <YOUR_AWS_ACCOUNT_ID>.dkr.ecr.<YOUR_REGION>.amazonaws.com
+
+docker pull <YOUR_AWS_ACCOUNT_ID>.dkr.ecr.<YOUR_REGION>.amazonaws.com/nodejs-aws-k8s-app:latest
+
+docker run -d --name nodejs-aws-k8s-app -p 3000:3000 --restart unless-stopped \
+  <YOUR_AWS_ACCOUNT_ID>.dkr.ecr.<YOUR_REGION>.amazonaws.com/nodejs-aws-k8s-app:latest
+```
+
+### Option B: Kubernetes (Requires t3.small or larger)
 
 ```bash
 cd Project-Sabeeh/scripts

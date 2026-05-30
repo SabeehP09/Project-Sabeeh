@@ -78,10 +78,8 @@ Project-Sabeeh/
 │   ├── setup-ec2.sh              # EC2 Minikube & Docker setup
 │   ├── build-and-push.sh         # Build & push to ECR
 │   └── deploy-k8s.sh             # Deploy to Minikube
-├── docs/
-│   ├── REPORT.pdf                # Final project report (8 pages)
-│   ├── VIDEO_SCRIPT.md           # Demo video script
-│   └── screenshot-guide.md       # Required screenshots guide
+├── Docs/
+│   └── Project Report.docx       # Final project report
 ├── screenshots/                  # Screenshots for report
 └── README.md                     # This file
 ```
@@ -158,13 +156,18 @@ cd scripts
 1. Go to AWS Console → EC2 → Launch Instance
 2. **Name:** `minikube-k8s-node`
 3. **AMI:** Amazon Linux 2023 or Ubuntu Server 22.04 LTS
-4. **Instance Type:** `t2.micro` (Free Tier eligible)
+4. **Instance Type:** `t2.micro` (Free Tier eligible) — see note below about Minikube vs Docker-only
 5. **Key Pair:** Create or select an existing key pair
 6. **Security Group:** Allow SSH (22), HTTP (80), and Custom TCP (3000) from anywhere
 7. **Storage:** 20 GB gp2 (Free Tier eligible)
 8. Launch and note the **Public IPv4 address**
 
-### Step 4: Setup EC2 (Minikube + Docker)
+> **Note about Minikube vs Docker-only:**
+> Minikube requires significant RAM (~1.5GB+) and will not run reliably on a `t2.micro`.
+> For Free Tier, use the **Docker-only deployment** below. If you want Kubernetes,
+> use at least a `t3.small` instance.
+
+### Step 4: Setup EC2 (Docker + Optional Minikube)
 
 ```bash
 ssh -i your-key.pem ec2-user@<EC2_PUBLIC_IP>
@@ -177,7 +180,20 @@ cd Project-Sabeeh/scripts
 
 > ⚠️ Log out and SSH back in for Docker group permissions to take effect.
 
-### Step 5: Deploy to Kubernetes
+### Step 5a: Deploy with Docker (Recommended for Free Tier)
+
+```bash
+# On the EC2 instance
+aws ecr get-login-password --region us-east-1 | \
+  docker login --username AWS --password-stdin 123456789012.dkr.ecr.us-east-1.amazonaws.com
+
+docker pull 123456789012.dkr.ecr.us-east-1.amazonaws.com/nodejs-aws-k8s-app:latest
+
+docker run -d --name nodejs-aws-k8s-app -p 3000:3000 --restart unless-stopped \
+  123456789012.dkr.ecr.us-east-1.amazonaws.com/nodejs-aws-k8s-app:latest
+```
+
+### Step 5b: Deploy to Kubernetes (Requires t3.small or larger)
 
 ```bash
 cd Project-Sabeeh/scripts
